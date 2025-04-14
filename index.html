@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ULM AI Chat Bot</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    #logo-container {
+      position: relative;
+      width: 100%;
+      background: #800020 url('line-pattern_0.png') repeat-x;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100px;
+      z-index: 1;
+    }
+
+    #logo {
+      height: 100%;
+      width: auto;
+    }
+
+    #container {
+      max-width: 900px;
+      margin: 140px auto 40px auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .hero {
+  background: linear-gradient(to bottom right, #800020, #a52a2a);
+  color: white;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  color: white;
+}
+
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button {
+  background: white;
+  color: #800020;
+  padding: 12px 25px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  display: inline-block;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.cta-button:hover {
+  background: #ddd;
+  color: #d0c6c7;
+}
+
+    h1, h2 {
+      color: #800020;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .collapsible {
+      background-color: #eee;
+      color: #800020;
+      cursor: pointer;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .active, .collapsible:hover {
+      background-color: #d5d5d5;
+    }
+
+    .content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      background-color: #f9f9f9;
+    }
+
+    ul.columns {
+      columns: 2;
+      -webkit-columns: 2;
+      -moz-columns: 2;
+      padding-left: 20px;
+    }
+
+    ul.columns li {
+      margin-bottom: 8px;
+    }
+
+    #examples {
+      background-color: #f7f7f7;
+      padding: 15px;
+      border-left: 4px solid #800020;
+    }
+
+    .quick-links ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .quick-links li {
+      margin: 8px 0;
+    }
+
+    .quick-links a {
+      text-decoration: none;
+      color: #800020;
+    }
+
+    .quick-links a:hover {
+      text-decoration: underline;
+    }
+
+    @media screen and (max-width: 768px) {
+      ul.columns {
+        columns: 1;
+      }
+    }
+
+    #user-greeting {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 10;
+}
+
+#user-greeting a {
+  color: white;
+  text-decoration: underline;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+  <div id="logo-container">
+    <a href="https://en.wikipedia.org/w/index.php?curid=60039366" title="Fair use of copyrighted material in the context of Louisiana–Monroe Warhawks">
+      <img src="Louisiana-Monroe_Warhawks_logo.svg" alt="Louisiana-Monroe Warhawks Logo" id="logo" />
+    </a>
+  </div>
+  <section class="hero">
+    <div class="hero-text" data-aos="fade-down">
+      <h1>Welcome to the ULM AI Chatbot</h1>
+      <p>Instant answers about housing, scholarships, dining, classes & more — powered by AI.</p>
+      <a href="Send.html" class="cta-button">Share Your Knowledge!</a>
+    </div>
+  </section>
+
+  <div id="user-greeting">
+    Welcome <strong>Sujal</strong>! <a href="#" id="logout-link">LOG OUT?</a>
+  </div>
+  
+
+  <div id="container">
+    <h1 data-aos="fade-up">Welcome to the ULM AI Chat Bot 🤖</h1>
+    <p data-aos="fade-up">Ask me anything about the University of Louisiana at Monroe (ULM) and I’ll help you out!</p>
+
+    <div class="section" data-aos="fade-up">
+      <h2>💡 What I Know</h2>
+      <button class="collapsible">🎓 Academics & Programs</button>
+      <div class="content">
+        <ul class="columns">
+          <li>CS Major & Minor</li>
+          <li>Math Minor</li>
+          <li>Academic Calendar</li>
+          <li>Graduate School</li>
+          <li>General Study</li>
+          <li>Graphic Design</li>
+          <li>Environmental Health & Safety</li>
+          <li>VAPA | Music</li>
+        </ul>
+      </div>
+
+      <button class="collapsible">🏠 Housing & Campus Life</button>
+      <div class="content">
+        <ul class="columns">
+          <li>ULM Housing & Floor Plans</li>
+          <li>Meal Plans & Dining</li>
+          <li>Activity Center</li>
+          <li>Library</li>
+          <li>Mobile App</li>
+        </ul>
+      </div>
+
+      <button class="collapsible">📋 Admissions & Scholarships</button>
+      <div class="content">
+        <ul class="columns">
+          <li>Admission Requirements</li>
+          <li>Application Deadlines</li>
+          <li>Scholarships</li>
+          <li>Endowed Scholarships</li>
+          <li>Foundation Scholarships</li>
+          <li>How to Apply</li>
+        </ul>
+      </div>
+
+      <button class="collapsible">🧠 Student Support & Resources</button>
+      <div class="content">
+        <ul class="columns">
+          <li>Warhawk Book Bundle</li>
+          <li>Computer Labs</li>
+          <li>Counseling Center</li>
+          <li>Health Clinic</li>
+          <li>Student Technology Access Plan</li>
+          <li>IT Help Desk</li>
+          <li>First Year Experience</li>
+        </ul>
+      </div>
+
+      <button class="collapsible">📢 Others</button>
+      <div class="content">
+        <ul class="columns">
+          <li>Internships</li>
+          <li>Honors Program</li>
+          <li>Military Science/ROTC</li>
+          <li>Police Department</li>
+          <li>Parking</li>
+          <li>Alumni</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section quick-links" data-aos="fade-up">
+      <h2>📝 Student Tips & Quick Links</h2>
+      <ul>
+        <li><a href="https://www.ulm.edu/reslife/">Apply for Housing</a></li>
+        <li><a href="https://www.ulm.edu/scholarships/">Scholarship Opportunities</a></li>
+        <li><a href="https://univlamonroe.campusdish.com/en/">Dining Hours & Locations</a></li>
+        <li><a href="https://www.ulm.edu/counselingcenter/">Book Counseling Appointment</a></li>
+        <li><a href="https://www.ulm.edu/calendar/">View Academic Calendar</a></li>
+      </ul>
+    </div>
+
+    <div class="section" id="examples" data-aos="fade-up">
+      <h2>🎯 Example Questions to Ask</h2>
+      <p><strong>Q:</strong> What are the meal plan options at ULM?<br><strong>A:</strong> ULM offers several meal plans including full-access and block plans. You can use them at Schulze Dining Hall and campus cafés.</p>
+      <p><strong>Q:</strong> How can I apply for scholarships?<br><strong>A:</strong> You can apply for scholarships through the ULM Foundation website or through the scholarship portal in your student dashboard.</p>
+      <p><strong>Q:</strong> What does the Warhawk Book Bundle include?<br><strong>A:</strong> It includes all your required textbooks and learning materials, conveniently billed with your tuition.</p>
+      <p><strong>Q:</strong> Where is the student counseling center?<br><strong>A:</strong> It’s located in the Activity Center, near the health clinic. Walk-ins are welcome or you can schedule online.</p>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init();
+
+    const collapsibles = document.querySelectorAll(".collapsible");
+    collapsibles.forEach(btn => {
+      btn.addEventListener("click", function () {
+        this.classList.toggle("active");
+        const content = this.nextElementSibling;
+        content.style.display = content.style.display === "block" ? "none" : "block";
+      });
+    });
+
+    (function(){
+        if (!window.chatbase || window.chatbase("getState") !== "initialized") {
+            window.chatbase = (...arguments) => {
+                if (!window.chatbase.q) { window.chatbase.q = [] }
+                window.chatbase.q.push(arguments)
+            };
+            window.chatbase = new Proxy(window.chatbase, {
+                get(target, prop) {
+                    if (prop === "q") { return target.q }
+                    return (...args) => target(prop, ...args)
+                }
+            });
+        }
+        const onLoad = function() {
+            const script = document.createElement("script");
+            script.src = "https://www.chatbase.co/embed.min.js";
+            script.id = "HKjFoNxlKjmhLr6Z7xRB5";
+            script.domain = "www.chatbase.co";
+            document.body.appendChild(script);
+        };
+        if (document.readyState === "complete") {
+            onLoad();
+        } else {
+            window.addEventListener("load", onLoad);
+        }
+    })();
+  </script>
+</body>
+</html>

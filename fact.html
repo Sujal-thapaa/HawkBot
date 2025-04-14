@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Fact Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      resize: none;
+    }
+
+    button {
+      background-color: #800020;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #a52a2a;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .success {
+      background-color: #e0f7e9;
+      color: #2e7d32;
+    }
+
+    .error {
+      background-color: #fdecea;
+      color: #c62828;
+    }
+
+    .loading {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>University Fact Checker</h1>
+    <textarea id="query" placeholder="Enter a fact about the university..."></textarea>
+    <button onclick="checkFact()">Check Fact</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    async function checkFact() {
+      const query = document.getElementById("query").value;
+      const resultDiv = document.getElementById("result");
+
+      if (!query) {
+        resultDiv.textContent = "Please enter a fact to check.";
+        resultDiv.className = "result error";
+        return;
+      }
+
+      resultDiv.textContent = "Checking fact... Please wait.";
+      resultDiv.className = "result loading";
+
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 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", // Replace with your API key
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo", // Use 'gpt-4' for more complex queries
+            messages: [
+              {
+                role: "system",
+                content: "You are a fact-checking assistant. Verify the truthfulness of the following statement and provide reasoning.",
+              },
+              { role: "user", content: query },
+            ],
+            max_tokens: 150,
+            temperature: 0,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const answer = data.choices[0].message.content.trim();
+          resultDiv.textContent = `Fact Check Result: ${answer}`;
+          resultDiv.className = "result success";
+        } else {
+          resultDiv.textContent = `Error: ${data.error.message}`;
+          resultDiv.className = "result error";
+        }
+      } catch (error) {
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.className = "result error";
+      }
+    }
+  </script>
+</body>
+</html>

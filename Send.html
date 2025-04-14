@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ULM Social Post App</title>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Red Strip and Logo */
+    #logo-container {
+      width: 100%;
+      background: #800020 url('line-pattern_0.png') repeat-x;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100px;
+    }
+
+    #logo {
+      height: 250px;
+      width: auto;
+      margin-top: 80px; /* Moves the logo downward */
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(to bottom right, #800020, #a52a2a);
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+    }
+
+    /* Main Container */
+    #container {
+      max-width: 900px;
+      margin: 30px auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      border-radius: 20px;
+      background-color: #ccc;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background-color: #800020;
+      color: white;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* Form & Buttons */
+    #post-form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-size: 16px;
+    }
+
+    #post-form button,
+    #download-json-btn {
+      background-color: #800020;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    /* Post Styles */
+    .post {
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .post-text {
+      font-size: 16px;
+      color: #1c1e21;
+      margin-bottom: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .like-btn,
+    .dislike-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .like-btn {
+      background-color: #42b72a;
+      color: white;
+    }
+
+    .dislike-btn {
+      background-color: #e53935;
+      color: white;
+    }
+
+    #user-greeting {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 10;
+}
+
+#user-greeting a {
+  color: white;
+  text-decoration: underline;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Top Logo Bar -->
+  <div id="logo-container">
+    <a href="https://en.wikipedia.org/wiki/Louisiana–Monroe_Warhawks" title="Louisiana–Monroe Warhawks">
+      <img src="HawkBot_logo.png" alt="ULM Logo" id="logo" />
+    </a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>ULM Social Post Wall</h1>
+    <p>Post updates, like others, and export your messages — all in one place!</p>
+  </section>
+
+  <!-- Main Container -->
+  <div id="container">
+    <!-- Tabs -->
+    <div class="tabs">
+      <div id="tab-make" class="tab active">📝 Make Post</div>
+      <div id="tab-posts" class="tab">📜 View Posts</div>
+    </div>
+
+    <!-- Make Post Section -->
+    <div id="make-section" class="section active">
+      <form id="post-form">
+        <textarea id="post-content" placeholder="Enter new information?" rows="3" required></textarea><br />
+        <button type="submit">Post</button>
+      </form>
+    </div>
+
+    <!-- Posts Section -->
+    <div id="posts-section-wrapper" class="section">
+      <button id="download-json-btn">📥 Download Posts as JSON</button>
+      <div id="posts-section"></div>
+    </div>
+  </div>
+
+  <div id="user-greeting">
+    Welcome <strong>Sujal</strong>! <a href="#" id="logout-link">LOG OUT?</a>
+  </div>
+  
+
+  <script>
+    (function(){
+        if (!window.chatbase || window.chatbase("getState") !== "initialized") {
+            window.chatbase = (...arguments) => {
+                if (!window.chatbase.q) { window.chatbase.q = [] }
+                window.chatbase.q.push(arguments)
+            };
+            window.chatbase = new Proxy(window.chatbase, {
+                get(target, prop) {
+                    if (prop === "q") { return target.q }
+                    return (...args) => target(prop, ...args)
+                }
+            });
+        }
+        const onLoad = function() {
+            const script = document.createElement("script");
+            script.src = "https://www.chatbase.co/embed.min.js";
+            script.id = "HKjFoNxlKjmhLr6Z7xRB5"; // ✅ Your actual Chatbase bot ID
+            script.domain = "www.chatbase.co";
+            document.body.appendChild(script);
+        };
+        if (document.readyState === "complete") {
+            onLoad();
+        } else {
+            window.addEventListener("load", onLoad);
+        }
+    })();
+
+
+    </script>
+    
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    emailjs.init("tOATni5Fd6fnM5Fh9");
+
+    const postForm = document.getElementById("post-form");
+    const postContent = document.getElementById("post-content");
+    const postsSection = document.getElementById("posts-section");
+
+    window.onload = function () {
+      const savedPosts = JSON.parse(localStorage.getItem("posts")) || [];
+      savedPosts.forEach(text => createPost(text));
+    };
+
+    postForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const content = postContent.value.trim();
+      if (content === "") return;
+
+      createPost(content);
+      savePost(content);
+      postContent.value = "";
+    });
+
+    function createPost(text) {
+      const post = document.createElement("div");
+      post.className = "post";
+      post.innerHTML = `
+        <p class="post-text">${text}</p>
+        <div class="buttons">
+          <button class="like-btn">Hawk-Yeah</button>
+          <button class="dislike-btn">Hawk-Nah</button>
+        </div>
+      `;
+
+      post.querySelector(".like-btn").addEventListener("click", () => sendEmail(text));
+      post.querySelector(".dislike-btn").addEventListener("click", () => {
+        post.remove();
+        deletePost(text);
+      });
+
+      postsSection.prepend(post);
+    }
+
+    function sendEmail(postText) {
+      const templateParams = {
+        user_name: "HawkBot",
+        message: postText
+      };
+
+      emailjs.send('service_8xx19j9', 'template_lwgfskh', templateParams)
+        .then(() => alert("Liked! Email sent."))
+        .catch(error => alert("Failed to send email: " + JSON.stringify(error)));
+    }
+
+    function savePost(text) {
+      let posts = JSON.parse(localStorage.getItem("posts")) || [];
+      posts.push(text);
+      localStorage.setItem("posts", JSON.stringify(posts));
+    }
+
+    function deletePost(text) {
+      let posts = JSON.parse(localStorage.getItem("posts")) || [];
+      posts = posts.filter(p => p !== text);
+      localStorage.setItem("posts", JSON.stringify(posts));
+    }
+
+    document.getElementById("download-json-btn").addEventListener("click", () => {
+      const posts = JSON.parse(localStorage.getItem("posts")) || [];
+      const blob = new Blob([JSON.stringify(posts, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "posts.json";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // Tab switching logic
+    const tabMake = document.getElementById("tab-make");
+    const tabPosts = document.getElementById("tab-posts");
+    const makeSection = document.getElementById("make-section");
+    const postsWrapper = document.getElementById("posts-section-wrapper");
+
+    tabMake.addEventListener("click", () => {
+      tabMake.classList.add("active");
+      tabPosts.classList.remove("active");
+      makeSection.classList.add("active");
+      postsWrapper.classList.remove("active");
+    });
+
+    tabPosts.addEventListener("click", () => {
+      tabPosts.classList.add("active");
+      tabMake.classList.remove("active");
+      postsWrapper.classList.add("active");
+      makeSection.classList.remove("active");
+    });
+  </script>
+</body>
+</html>
